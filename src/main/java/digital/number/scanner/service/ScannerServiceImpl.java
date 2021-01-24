@@ -6,11 +6,13 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.stream.BaseStream;
 
 public class ScannerServiceImpl implements ScannerService {
 	
 	public static final String WHITESPACE_REGEX = "^\\s*$";
+	public static final Logger LOG = Logger.getLogger(ScannerServiceImpl.class.getName());
 
 	private final ChunkerService chunkerService;
 	private final ChunkProcessorService chunkProcessorService;
@@ -24,13 +26,13 @@ public class ScannerServiceImpl implements ScannerService {
 		this.outputCollector = new OutputCollector();
 	}
 
-	public List<String> performScanning(final String inputFilePath) {
+	@Override
+	public List<String> scan(final String inputFilePath) {
 		return fromPath(inputFilePath)
 				.bufferWhile(s -> !s.matches(WHITESPACE_REGEX))
 				.map(chunkerService::buildChunk)
 				.flatMap(chunk -> chunkProcessorService.fetchSymbolFlux(chunk).map(matcherService::match).collect(outputCollector))
-				.doOnNext(System.out::println)
-				.onErrorContinue((throwable, o) -> System.out.println(throwable.getMessage()))
+				.onErrorContinue((throwable, o) -> LOG.warning(throwable.getMessage()))
 				.collectList()
 				.block();
 	}

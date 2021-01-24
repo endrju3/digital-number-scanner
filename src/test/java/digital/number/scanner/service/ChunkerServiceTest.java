@@ -1,5 +1,6 @@
 package digital.number.scanner.service;
 
+import digital.number.scanner.exception.InvalidChunkException;
 import digital.number.scanner.model.Chunk;
 import org.junit.Test;
 
@@ -79,10 +80,10 @@ public class ChunkerServiceTest {
 		);
 
 		// When
-		RuntimeException ex = assertThrows(RuntimeException.class, () -> chunkerService.buildChunk(lines));
+		InvalidChunkException ex = assertThrows(InvalidChunkException.class, () -> chunkerService.buildChunk(lines));
 
 		// Then
-		assertEquals("Invalid chunk - height is different than 3", ex.getMessage());
+		assertEquals("Invalid chunk - Height is different than 3", ex.getMessage());
 	}
 
 	@Test
@@ -95,10 +96,10 @@ public class ChunkerServiceTest {
 		);
 
 		// When
-		RuntimeException ex = assertThrows(RuntimeException.class, () -> chunkerService.buildChunk(lines));
+		InvalidChunkException ex = assertThrows(InvalidChunkException.class, () -> chunkerService.buildChunk(lines));
 
 		// Then
-		assertEquals("Invalid chunk - rows have different sizes", ex.getMessage());
+		assertEquals("Invalid chunk - Rows have different sizes", ex.getMessage());
 	}
 	
 	@Test
@@ -111,9 +112,9 @@ public class ChunkerServiceTest {
 		);
 
 		// When
-		RuntimeException ex = assertThrows(RuntimeException.class, () -> chunkerService.buildChunk(lines));
+		InvalidChunkException ex = assertThrows(InvalidChunkException.class, () -> chunkerService.buildChunk(lines));
 
 		// Then
-		assertEquals("Invalid chunk - chunk width is different than 27", ex.getMessage());
+		assertEquals("Invalid chunk - Chunk width is different than 27", ex.getMessage());
 	}
 }

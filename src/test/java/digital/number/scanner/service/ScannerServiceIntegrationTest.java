@@ -3,8 +3,11 @@ package digital.number.scanner.service;
 import digital.number.scanner.model.Chunk;
 import digital.number.scanner.model.Symbol;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Random;
+import java.util.logging.LogManager;
 
 public class ScannerServiceIntegrationTest extends BaseScannerServiceIntegrationTest {
 
@@ -18,10 +21,16 @@ public class ScannerServiceIntegrationTest extends BaseScannerServiceIntegration
     );    
     
     private final ScannerService scannerService = new ScannerServiceImpl(NUMBER_OF_DIGITS, SYMBOL_WIDTH, DIGITS, VALUES);
-    
+
+    public ScannerServiceIntegrationTest() throws IOException {
+        try(InputStream configFile = this.getClass().getResourceAsStream("/app.properties")) {
+            LogManager.getLogManager().readConfiguration(configFile);
+        }
+    }
+
     @Override
     protected List<String> performScanning(String inputFilePath) {
-        return scannerService.performScanning(inputFilePath);
+        return scannerService.scan(inputFilePath);
     }
 
     // Generate some random numbers
